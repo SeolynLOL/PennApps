@@ -1,7 +1,7 @@
 #include <Servo.h>
 
-Servo servoX;         // Create a servo object for the X-axis
-Servo servoY;         // Create a servo object for the Y-axis
+Servo servoX;
+Servo servoY;
 Servo waterServo;
 
 unsigned long lastTriggerTime = 0;
@@ -29,27 +29,22 @@ void loop() {
 
         int reversedX = 640 - x;
 
-        int servoXAngle = map(reversedX, 0, 640, 45, 135); // Adjust the mapping for left and right
+        int servoXAngle = map(reversedX, 0, 640, 45, 135);
 
-        // Constrain the servo angle to a reasonable range
         servoXAngle = constrain(servoXAngle, 45, 135);
 
-        // Map the Y-coordinate to servo angle for Y-axis
-        int servoYAngle = map(y, 0, 480, 45, 135); // Adjust the mapping for up and down
+        int servoYAngle = map(y, 0, 480, 45, 135);
 
-        // Constrain the servo angle to a reasonable range
         servoYAngle = constrain(servoYAngle, 45, 135);
 
-        // Set the servo positions
         servoX.write(servoXAngle);
         servoY.write(servoYAngle);
 
-        // Check if it's time to trigger the water servo
         unsigned long currentTime = millis();
-        if (currentTime - lastTriggerTime >= 1000) { // Trigger every 1 second
-          waterServo.write(0); // Spin to 0 degrees (trigger)
-          delay(100);          // Wait briefly
-          waterServo.write(90); // Spin back to 90 degrees (reset)
+        if (currentTime - lastTriggerTime >= 1000) { 
+          waterServo.write(90);
+          delay(400);         
+          waterServo.write(0); 
           lastTriggerTime = currentTime;
         }
       }
