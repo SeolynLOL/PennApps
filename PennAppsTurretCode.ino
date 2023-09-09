@@ -1,10 +1,13 @@
+#include <Brain.h>
 #include <Servo.h>
+
+Brain brain(Serial);
 
 Servo servoX;
 Servo servoY;
 Servo waterServo;
 
-unsigned long lastTriggerTime = 0;
+
 
 void setup() {
   Serial.begin(9600);
@@ -16,11 +19,20 @@ void setup() {
   waterServo.write(0); 
 }
 
+unsigned long lastTriggerTime = 0;
+
 void loop() {
+
+  if(brain.update()){
+    Serial.print(brain.readMeditation());
+    Serial.print(",");
+    Serial.println(brain.readSignalQuality());
+  }
+
   if (Serial.available() > 0) {
     String data = Serial.readStringUntil('\n'); 
     int commaIndex = data.indexOf(',');
-    if (commaIndex != -1) {
+    if (commaIndex != -1 && data!="a") {
       int x = data.substring(0, commaIndex).toInt();
       data = data.substring(commaIndex + 1);
       commaIndex = data.indexOf(',');
@@ -39,7 +51,8 @@ void loop() {
 
         servoX.write(servoXAngle);
         servoY.write(servoYAngle);
-
+      }
+    } else{
         unsigned long currentTime = millis();
         if (currentTime - lastTriggerTime >= 1000) { 
           waterServo.write(90);
@@ -47,7 +60,8 @@ void loop() {
           waterServo.write(0); 
           lastTriggerTime = currentTime;
         }
-      }
     }
   }
+
+
 }
