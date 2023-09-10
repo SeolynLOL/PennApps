@@ -1,2 +1,0 @@
-# PennApps
-upenn yay
